@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    const logout = () => { window.location.href = "http://localhost:3000/logout" };
+  </script>
+    <title>Medical Staff Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: auto%;
+            margin: auto;
+            overflow: auto;
+        }
+        table {
+            width: 50%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        /* Base styles */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+        .action-links a {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-right: 10px;
+        }
+        .add-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+        .logout-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #d9534f;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+        .form-section {
+            margin-top: 20px;
+        }
+        label, input, textarea {
+            display: block;
+            margin-bottom: 10px;
+            width: 90px;
+        }
+        input, textarea, button {
+            padding: 8px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+      <button class="logout-button" onclick="logout()">Logout</button>
+        <h2>Doctors</h2>
+        <!-- Add Doctor Form -->
+        <div class="form-section">
+            <form id="add-doctor-form">
+                <label for="dct_id">Doctor ID:</label>
+                <input type="text" id="dct_id" name="dct_id" required>
+
+                <label for="dct_name">Name:</label>
+                <input type="text" id="dct_name" name="dct_name" required>
+
+                <label for="dct_address">Address:</label>
+                <input type="text" id="dct_address" name="dct_address" required>
+
+                <label for="dct_phonenum">Phone Number:</label>
+                <input type="text" id="dct_phonenum" name="dct_phonenum" required>
+                <label for="dct_pass">Password:</label>
+                <input type="text" id="dct_pass" name="dct_pass" required>
+
+                <label for="Medical_specialty_dep_id">Department Id:</label>
+                <input type="text" id="Medical_specialty_dep_id" name="Medical_specialty_dep_id" required>
+
+                <!-- ... Other input fields ... -->
+
+                <button type="submit">Add Doctor</button>
+            </form>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+            <td><b>ID</b></td>
+            <td><b>Name</b></td>
+            <td><b>Address</b></td>
+            <td><b>Phone Number</b></td>
+             <td><b>Password</b></td>
+            <td><b>Department ID</b></td>
+                </tr>
+            </thead>
+            <tbody>
+
+                {{#each doctors}}
+                <tr>
+                    <td>{{dct_id}}</td>
+                    <td>{{dct_name}}</td>
+                    <td>{{dct_address}}</td>
+                    <td>{{dct_phonenum}}</td>
+                    <td>{{dct_pass}}</td>
+                    <td>{{Medical_specialty_dep_id}}</td>
+                    <td>
+                        <form action="/doctor/edit/{{this.dct_id}}" method="post">
+                    <input type="text" name="dct_id" value="{{this.dct_id}}">
+                <td><input type="text" name="dct_name" value="{{this.dct_name}}"></td>
+                    <td><input type="text" name="dct_address" value="{{this.dct_address}}"></td>
+                <td><input type="text" name="dct_phonenum" value="{{this.dct_phonenum}}"></td>
+                <td><input type="text" name="dct_pass" value="{{this.dct_pass}}"></td>
+                <td><input type="text" name="Medical_specialty_dep_id" value="{{this.Medical_specialty_dep_id}}"></td>
+                   <td>
+                <button type="submit" class="save-button">Save</button>
+            </td>
+                </form>
+<td>
+                <form action="/doctor/delete/{{this.dct_id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this doctor?');">
+                    <td><input type="hidden" name="dct_id" value="{{this.dct_id}}"></td>
+                    <td><button type="submit" class="delete-button">Delete</button></td>
+                </form>
+                    </td>
+                    
+                </tr>
+                
+                {{/each}}
+            </tbody>
+        </table>       
+        <h2>Nurses</h2>
+                <div class="form-section">
+            <form id="add-nurse-form">
+                <label for="nurse_id">Nurse ID:</label>
+                <input type="text" id="nurse_id" name="nurse_id" required>
+                <label for="nurse_name">Name:</label>
+                <input type="text" id="nurse_name" name="nurse_name" required>
+                <label for="nurse_address">Address:</label>
+                <input type="text" id="nurse_address" name="nurse_address" required>
+                <label for="nurse_phonenum">Phone Number:</label>
+                <input type="text" id="nurse_phonenum" name="nurse_phonenum" required>
+                <label for="nurse_pass">Password:</label>
+                <input type="text" id="nurse_pass" name="nurse_pass" required>
+                <label for="Medical_specialty_dep_id">Department Id:</label>
+                <input type="text" id="Medical_specialty_dep_id" name="Medical_specialty_dep_id" required>
+                 <button type="submit">Add Nurse</button>
+            </form>
+        </div>
+        <table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phone Number</th>
+            <th>Password</th>
+            <th>Department ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each nurses}}
+        <tr>
+            <td>{{this.ID}}</td>
+            <td>{{this.Name}}</td>
+            <td>{{this.Address}}</td>
+            <td>{{this.PhoneNumber}}</td>
+            <td>{{this.Password}}</td>
+            <td>{{this.DepartmentID}}</td>
+            <td>
+                <form action="/nurse/edit/{{this.nurse_id}}" method="post">
+                    <td><input type="text" name="nurse_id" value="{{this.nurse_id}}"></td>
+                    <td><input type="text" name="nurse_name" value="{{this.nurse_name}}"></td>                   
+                    <td> <input type="text" name="nurse_address" value="{{this.nurse_address}}"></td>        
+                    <td> <input type="text" name="nurse_phonenum" value="{{this.nurse_phonenum}}"></td>
+                    <td><input type="text" name="nurse_pass" value="{{this.nurse_pass}}"></td>
+                    <td><input type="text" name="Medical_specialty_dep_id" value="{{this.Medical_specialty_dep_id}}"></td>
+                    <td><button type="submit" class="edit-button">Save Changes</button></td>
+                </form>
+
+<td>
+    <form action="/nurse/delete/{{this.nurse_id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this nurse?');">
+        <input type="hidden" name="nurse_id" value="{{this.nurse_id}}">
+        <button type="submit" class="delete-button">Delete</button>
+    </form>
+</td>
+
+
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+
+    </div>
+<script>
+        // JavaScript for handling form submissions, editing, and deleting
+        // Example: Add Doctor Form Submission
+        document.getElementById('add-doctor-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Collect form data
+            var dctId = document.getElementById('dct_id').value;
+            var dctName = document.getElementById('dct_name').value;
+            var dctAddress = document.getElementById('dct_address').value;
+            var dctPhoneNum = document.getElementById('dct_phonenum').value;
+            var dctDepId = document.getElementById('Medical_specialty_dep_id').value;
+            var dctPass = document.getElementById('dct_pass').value;
+            
+            // ... Collect other fields ...
+
+            // AJAX request to server to add doctor
+            // Example: Using Fetch API
+            fetch('/add-doctor', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                   dct_id: parseInt(dctId, 10),  // Ensure correct data type
+                   dct_name: dctName,
+                   dct_address: dctAddress,
+                   dct_phonenum: parseInt(dctPhoneNum, 10),
+                   Medical_specialty_dep_id: parseInt(dctDepId, 10),
+                   dct_pass: parseInt(dctPass, 10),
+
+                    // ... Other fields ...
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle response
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Similarly handle other forms and actions
+    </script>
+    <script>
+    document.getElementById('add-nurse-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Collect form data
+        var nurseId = document.getElementById('nurse_id').value;
+        var nurseName = document.getElementById('nurse_name').value;
+        var nurseAddress = document.getElementById('nurse_address').value;
+        var nursePhoneNum = document.getElementById('nurse_phonenum').value;
+        var nursePass = document.getElementById('nurse_pass').value;
+        var nurseDepId = document.getElementById('Medical_specialty_dep_id').value; // Adjust ID based on your actual form
+
+        // AJAX request to server to add nurse
+        fetch('/add-nurse', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nurse_id: parseInt(nurseId, 10), // Ensure correct data type
+                nurse_name: nurseName,
+                nurse_address: nurseAddress,
+                nurse_phonenum: parseInt(nursePhoneNum, 10),
+                nurse_pass: parseInt(nursePass, 10),
+                Medical_specialty_dep_id: parseInt(nurseDepId, 10), // Ensure this matches your backend field name
+                // ... Other fields ...
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle response
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+
+    // ... Additional JavaScript for other forms and actions ...
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+

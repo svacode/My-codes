@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+.login-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.side-frame {
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loginform-input-id,
+.loginform-input-pwd {
+  margin-bottom: 20px;
+}
+
+.label-text {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.loginform-input-id-input,
+.loginform-input-pwd-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.loginform-input-forget-link {
+  color: #007bff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.loginform-input-forget-link:hover {
+  text-decoration: underline;
+}
+
+.loginform-btnDiv-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.loginform-btnDiv-btn:hover {
+  background-color: #0056b3;
+}
+
+.login-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+  </style>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <div class="login-container">
+    <form id="loginform" method="post" action="/">
+      <h2>Login</h2>
+      <div class="loginform-input">
+        <div class="loginform-input-id">
+          <label for="id" class="label-text">Id</label>
+          <input class="loginform-input-id-input" name="id" type="text" required />
+        </div>
+        <div class="loginform-input-pwd">
+          <label for="password" class="label-text">Password</label>
+          <input class="loginform-input-pwd-input" name="password" type="password" required />
+        </div>
+      </div>
+      <div class="loginform-btnDiv">
+        <button class="loginform-btnDiv-btn" onclick="move()" type="submit">Login</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <script>
+    const logout = () => {
+      window.location.href = "http://localhost:3000/logout";
+    };
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      width: 80%;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      margin: 0;
+    }
+
+    .logout-button {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 10px;
+    }
+
+    select, .search-button {
+      padding: 10px;
+      border: none;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    .search-button {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .action-links a {
+      color: blue;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-right: 10px;
+    }
+
+    .add-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>Examination Records</h2>
+      <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+    <!-- Search Form -->
+<div class="search-container">
+  <form id="search-form">
+    <input class="search-input" type="text" placeholder="Enter Name" name="patientName">
+    <input class="search-input" type="text" placeholder="Social Security Number" name="patientSocSecNum">
+    <input class="search-input" type="text" placeholder="Phone Number" name="patientPhoneNum">
+    <button type="submit" class="search-button">Search</button>
+  </form>
+</div>
+
+<!-- Container to display search results -->
+<div id="search-results"></div>
+
+<script>
+  document.getElementById('search-form').onsubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    // Filter out empty fields
+    const filteredData = Object.fromEntries(Object.entries(data).filter(([key, value]) => value.trim() !== ''));
+
+    const response = await fetch('/search-patients', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(filteredData),
+    });
+
+    const result = await response.json();
+    displaySearchResults(result);
+};
+
+function displaySearchResults(results) {
+    const resultsContainer = document.getElementById('search-results');
+    resultsContainer.innerHTML = ''; // Clear previous results
+
+    results.forEach(patient => {
+        const patientElement = document.createElement('div');
+        patientElement.innerHTML = `
+            <p>Patient ID: ${patient.patient_id}</p>
+            <p>Name: ${patient.patient_name}</p>
+            <p>Social Security Number: ${patient.patient_soc_secnum}</p>
+            <p>Gender: ${patient.patient_gender}</p>
+            <p>Address: ${patient.patient_adsress}</p>
+            <p>Blood Type: ${patient.patient_bloodtype}</p>
+            <p>Height: ${patient.patient_height} cm</p>
+            <p>Weight: ${patient.patient_weight} kg</p>
+            <p>Phone Number: ${patient.patient_phonenum}</p>
+
+
+        `;
+        resultsContainer.appendChild(patientElement);
+    });
+}
+
+
+</script>
+
+
+    <table>
+      <thead>
+        <tr>
+          <th><b>Doctor ID</b></th>
+          <th><b>Patient ID</b></th>
+          <th><b>Examination Date</b></th>
+          <th><b>Examination Details</b></th>
+          <th><b>Actions</b></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#if user.isDoctor}}
+        <!-- Add Examination Form -->
+<form action="/examination/add-examination" method="post">
+  <label for="Doctor_dct_id">Doctor ID:</label>
+  <input type="text" id="Doctor_dct_id" name="Doctor_dct_id" required><br>
+
+  <label for="Patient_patient_id">Patient ID:</label>
+  <input type="text" id="Patient_patient_id" name="Patient_patient_id" required><br>
+
+  <label for="exam_date">Examination Date:</label>
+  <input type="date" id="exam_date" name="exam_date" required><br>
+
+  <label for="exam_details">Examination Details:</label>
+  <textarea id="exam_details" name="exam_details" required></textarea><br>
+
+  <button type="submit" class="add-button">Add Examination</button>
+</form>
+
+        {{#each examinationRecords}}
+        <tr>
+          <td>{{Doctor_dct_id}}</td>
+          <td>{{Patient_patient_id}}</td>
+          <td>{{exam_date}}</td>
+          <td>{{exam_details}}</td>
+          <td class="action-links">
+            <form action="/examination/edit/{{Doctor_dct_id}}/{{Patient_patient_id}}" method="post">
+              <!-- Hidden fields to pass IDs -->
+              <input type="hidden" name="Doctor_dct_id" value="{{Doctor_dct_id}}">
+              <input type="hidden" name="Patient_patient_id" value="{{Patient_patient_id}}">
+              <!-- Fields for the data you want to edit -->
+              <label for="exam_date">Examination Date:</label>
+              <input type="date" name="exam_date" id="exam_date" value="{{exam_date}}">
+              <label for="exam_details">Examination Details:</label>
+              <textarea name="exam_details" id="exam_details">{{exam_details}}</textarea>
+              <button type="submit" class="add-button">Submit</button>
+            </form>
+            <!-- Delete Form -->
+            <form action="/examination/delete" method="post" onsubmit="return confirm('Are you sure you want to delete this record?');">
+              <input type="hidden" name="Doctor_dct_id" value="{{Doctor_dct_id}}">
+              <input type="hidden" name="Patient_patient_id" value="{{Patient_patient_id}}">
+              <button type="submit" class="add-button">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+        {{else}}
+        {{#each examinationRecords}}
+        <tr>
+          <td>{{Doctor_dct_id}}</td>
+          <td>{{Patient_patient_id}}</td>
+          <td>{{exam_date}}</td>
+          <td>{{exam_details}}</td>
+          <td></td>
+        </tr>
+        {{/each}}
+        {{/if}}
+      </tbody>
+    </table>
+    <h2>Treatment Records</h2>
+    <table>
+      <thead>
+        <tr>
+          <th><b>Nurse ID</b></th>
+          <th><b>Patient ID</b></th>
+          <th><b>Treatment Date</b></th>
+          <th><b>Treatment Details</b></th>
+          <th><b>Actions</b></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#if user.isNurse}}
+        <!-- Add Treatment Form -->
+<form action="/treatment/add-treatment" method="post">
+  <label for="Nurse_nurse_id">Nurse ID:</label>
+  <input type="text" id="Nurse_nurse_id" name="Nurse_nurse_id" required><br>
+
+  <label for="Patient_patient_id">Patient ID:</label>
+  <input type="text" id="Patient_patient_id" name="Patient_patient_id" required><br>
+
+  <label for="treat_datetime">Treatment Date:</label>
+  <input type="date" id="treat_datetime" name="treat_datetime" required><br>
+
+  <label for="treat_details">Treatment Details:</label>
+  <textarea id="treat_details" name="treat_details" required></textarea><br>
+
+  <button type="submit" class="add-button">Add Treatment</button>
+</form>
+
+        {{#each treatmentRecords}}
+        <tr>
+          <td>{{Nurse_nurse_id}}</td>
+          <td>{{Patient_patient_id}}</td>
+          <td>{{treat_datetime}}</td>
+          <td>{{treat_details}}</td>
+          <td class="action-links">
+            <!-- Edit Form for Treatment -->
+<form action="/treatment/edit/{{Nurse_nurse_id}}/{{Patient_patient_id}}" method="post">
+  <!-- Hidden fields to pass IDs -->
+  <input type="hidden" name="Nurse_nurse_id" value="{{Nurse_nurse_id}}">
+  <input type="hidden" name="Patient_patient_id" value="{{Patient_patient_id}}">
+  <!-- Fields for the data you want to edit -->
+  <label for="treat_datetime">Treatment Date:</label>
+  <input type="date" name="treat_datetime" id="treat_datetime" value="{{treat_datetime}}">
+  <label for="treat_details">Treatment Details:</label>
+  <textarea name="treat_details" id="treat_details">{{treat_details}}</textarea>
+  <button type="submit" class="add-button">Submit</button>
+</form>
+
+<!-- Delete Form for Treatment -->
+<form action="/treatment/delete" method="post" onsubmit="return confirm('Are you sure you want to delete this record?');">
+  <!-- Hidden fields to pass IDs -->
+  <input type="hidden" name="Nurse_nurse_id" value="{{Nurse_nurse_id}}">
+  <input type="hidden" name="Patient_patient_id" value="{{Patient_patient_id}}">
+  <button type="submit" class="add-button">Delete</button>
+</form>
+
+          </td>
+        </tr>
+        {{/each}}
+        {{else}}
+        {{#each treatmentRecords}}
+        <tr>
+          <td>{{Nurse_nurse_id}}</td>
+          <td>{{Patient_patient_id}}</td>
+          <td>{{treat_datetime}}</td>
+          <td>{{treat_details}}</td>
+          <td></td>
+        </tr>
+        {{/each}}
+        {{/if}}
+      </tbody>
+    </table>
+  </div>
+  <script>
+    // Add any JavaScript here if needed
+  </script>
+</body>
+
+</html>

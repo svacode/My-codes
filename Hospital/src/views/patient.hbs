@@ -1,0 +1,177 @@
+<!-- patientCabinet.hbs -->
+<!DOCTYPE html>
+<html>
+<head>
+        <script>
+    const logout = () => {
+      window.location.href = "http://localhost:3000/logout";
+    };
+  </script>
+    <title>Patient Cabinet</title>
+</head>
+<style>
+    /* patientCabinet.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+section {
+    margin: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #007bff;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="number"],
+input[type="datetime-local"],
+button {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+    .logout-button {
+      background-color: #193fff;
+      color: white;
+      border: none;
+      padding-right: 30px;
+      cursor: pointer;
+      margin-right: 1000px;
+    }
+
+button {
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+}
+
+</style>
+<body>
+    <header>
+            <div class="header">
+      <h2>Examination Records</h2>
+      <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+    </header>
+
+
+<section>
+    <h2>Your Reservations</h2>
+    {{#if appointments}}
+        <ul>
+            {{#each appointments}}
+                <li>
+                    <p>Reservation Number: {{res_num}}</p>
+                    <p>Department ID: {{Medical_specialty_dep_id}}</p>
+                    <p>Reservation Date: {{res_datetime}}</p>
+                    <form action="/cancel-reservation" method="post">
+            <input type="hidden" name="reservationId" value="{{res_num}}">
+            <button type="submit">Cancel Reservation</button>
+        </form>
+                </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>You have no reservations.</p>
+    {{/if}}
+</section>
+
+    <section>
+        <h2>Make a Reservation</h2>
+        <script>
+    function submitReservation() {
+        const patientId = document.getElementById('patientId').value;
+        console.log('Patient ID Value:', patientId);
+        const specialtyDepId = document.getElementById('specialtyDepId').value;
+        const resDateTime = document.getElementById('resDateTime').value;
+
+        fetch('/make-reservation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+    body: JSON.stringify({
+        user: patientId,  // Ensure this key matches what you use in the backend
+        specialtyDepId: specialtyDepId,
+        resDateTime: resDateTime
+    })
+})
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            // Handle the response data
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+<form id="reservationForm">
+    <input type="id" id="patientId" name="patientId" placeholder="Your id">
+    <input type="number" id="specialtyDepId" name="specialtyDepId" placeholder="Department ID">
+    <input type="datetime-local" id="resDateTime" name="resDateTime">
+    <button type="button" onclick="submitReservation()">Submit Reservation</button>
+</form>
+
+
+
+    </section>
+
+    <script>
+
+    </script>
+</body>
+</html>
